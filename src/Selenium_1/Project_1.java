@@ -1,20 +1,27 @@
 package Selenium_1;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 
-public class Project_1 {
+
+public class Logintest_ddexcel {
 	
 	WebDriver driver;
 	
-
-	Project_1(WebDriver driver)
-	{
 	
+	public Logintest_ddexcel(WebDriver driver) 
+	{
+		
 		this.driver = driver;
 	}
 	
-	By UserName = By.id("user-name");
+    By UserName = By.id("user-name");
 	
 	By Password = By.id("password");
 	
@@ -39,65 +46,72 @@ public class Project_1 {
 	By finish = By.xpath("//button[@id='finish']");
 	
 	By backto_home = By.xpath("//button[@id='back-to-products']");
+
+	public void login_cases() throws IOException, InterruptedException
+	{
+		WebDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.get("https://www.saucedemo.com/");
+		String FilePath = "C:\\Users\\user\\eclipse-workspace\\Selenium_Assignment_9\\Test\\Login.xlsx";
+		FileInputStream fis = new FileInputStream(FilePath);
+		XSSFWorkbook wb = new XSSFWorkbook(fis);
+		XSSFSheet sheet = wb.getSheet("Test");
+		int rows = sheet.getLastRowNum();
+		for(int i=1;i<rows;i++) 
+		{
+			driver.findElement(By.xpath("//input[@id='user-name']")).sendKeys(sheet.getRow(i).getCell(0).toString());
+			driver.findElement(By.xpath("//input[@id='password']")).sendKeys(sheet.getRow(i).getCell(1).toString());
+			Thread.sleep(2000);
+			driver.findElement(By.xpath("//input[@id='login-button']")).click();
+			System.out.println("Username: "+sheet.getRow(i).getCell(0).toString()+" Password: "+sheet.getRow(i).getCell(1).toString());
+			driver.findElement(By.xpath("//button[@id='react-burger-menu-btn']")).click();
+			Thread.sleep(5000);
+			WebElement logout = driver.findElement(By.xpath("//a[@id='logout_sidebar_link']")); 
+			logout.click();
+		}
+
+		wb.close();
+		fis.close();
+		driver.quit();
+		}
+
+	     
+	public void browser_launch()
+	{
+		driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.get("https://www.saucedemo.com/");
+	}
 	
-	
-	public void enter_username(String user_name) 
-	{
-		driver.findElement(UserName).sendKeys(user_name);
-	}
-	public void enter_password(String pass_word)
-	{
-		driver.findElement(Password).sendKeys(pass_word);
-	}
-	public void Clickon_login()
-	{
-		driver.findElement(login_btn).click();
-	
-	}
-	public void addtocart1()
-	{
-		driver.findElement(add_cart1).click();
-	}
-	public void addtocart2()
-	{
-		driver.findElement(add_cart2).click();
-	}
-	
-	public void viewcart() 
+	public void login_page(String user_name,String pass_word)
 	{
 		
+		driver.findElement(UserName).sendKeys(user_name);
+		driver.findElement(Password).sendKeys(pass_word);
+		driver.findElement(login_btn).click();
+	}
+	
+	
+	public void shopping_cart() throws InterruptedException
+	{
+		driver.findElement(add_cart1).click();
+		Thread.sleep(2000);
+		driver.findElement(add_cart2).click();
+		Thread.sleep(2000);
 		driver.findElement(order_details).click();
 	}
-	
-	public void checkingout() 
+		
+	public void checkingout(String First_Name,String Last_Name,String Postalcode) throws InterruptedException 
 	{
-
 		driver.findElement(check_out).click();
-	}
-	
-	public void Firstname(String First_Name) 
-	{
 		driver.findElement(First_name).sendKeys(First_Name);
-	}
-	public void Lastname(String Last_Name) 
-	{
+		Thread.sleep(2000);
 		driver.findElement(Last_name).sendKeys(Last_Name);
-	}
-	
-	public void Postal_code(String Postalcode) 
-	{
+		Thread.sleep(2000);
 		driver.findElement(Postal_code).sendKeys(Postalcode);
-	}
-	public void checksout() 
-	{
 		driver.findElement(checks_out).click();
-	}
-	public void place_order() 
-	{
 		driver.findElement(finish).click();
-	}
-	public void backhome()
-	{
+		Thread.sleep(2000);
 		driver.findElement(backto_home).click();
 	}
 	
